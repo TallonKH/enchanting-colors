@@ -59,7 +59,7 @@ public class EnchantingColors {
                 ItemProperties.register(
                     Items.ENCHANTED_BOOK,
                     new ResourceLocation(MODID, "big"),
-                    (stack, level, entity, id) -> hasMultipleEnchants(getEnchantsTag(stack, false)) ? 1.0f : 0.0f
+                    (stack, level, entity, id) -> ClientConfig.USE_LARGE_BOOK.get() && hasMultipleEnchants(getEnchantsTag(stack, false)) ? 1.0f : 0.0f
                 );
             });
         }

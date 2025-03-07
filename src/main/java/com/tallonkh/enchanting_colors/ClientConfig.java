@@ -23,6 +23,12 @@ public class ClientConfig
     public static final ForgeConfigSpec.ConfigValue<Boolean> ENCHANTED_BOOK_GLINT = BUILDER
             .comment("Display the vanilla glint effect on enchanted books. If false, there will be no glint.")
             .define("enchantedBookGlint", false);
+    public static final ForgeConfigSpec.ConfigValue<Boolean> USE_CUSTOM_SEAL = BUILDER
+            .comment("When true, books with all enchants at max-level will have a different color seal.")
+            .define("maxedBookSeal", true);
+    public static final ForgeConfigSpec.ConfigValue<Boolean> USE_LARGE_BOOK = BUILDER
+            .comment("When true, books with multiple enchants will appear larger.")
+            .define("multiBookLarge", true);
     public static final ForgeConfigSpec.ConfigValue<List<String>> ENCHANT_COLORS = BUILDER
             .comment("List of colors in format 'mod:enchant_id=0xhexcode'.")
             .define("enchantColors", accumulateColorStrings(Defaults.ENCHANT_COLORS));

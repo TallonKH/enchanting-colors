@@ -82,6 +82,10 @@ public class ItemOverlayColor {
     }
 
     public static int computeSealColor(ListTag enchants){
+        if(!ClientConfig.USE_CUSTOM_SEAL.get()){
+            return SEAL_COLOR_NORMAL_HEX;
+        }
+
         if (enchants == null) {
             return SEAL_COLOR_EMPTY_HEX;
         }
