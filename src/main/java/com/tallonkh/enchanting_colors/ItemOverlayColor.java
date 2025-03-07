@@ -10,6 +10,8 @@ import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.List;
+
 import static com.tallonkh.enchanting_colors.EnchantInfo.ENCHANT_INFOS;
 import static com.tallonkh.enchanting_colors.EnchantUtil.getEnchantsTag;
 import static com.tallonkh.enchanting_colors.EnchantingColors.MODID;
