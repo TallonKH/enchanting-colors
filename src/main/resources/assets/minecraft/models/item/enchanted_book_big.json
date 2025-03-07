@@ -3,6 +3,7 @@
   "textures": {
     "layer0": "minecraft:item/enchanted_book_big_base",
     "layer1": "minecraft:item/enchanted_book_big_cover_overlay",
-    "layer2": "minecraft:item/enchanted_book_big_seal_overlay"
+    "layer2": "minecraft:item/enchanted_book_big_seal_overlay",
+    "layer3": "minecraft:item/enchanted_book_big_ribbon_overlay"
   }
 }

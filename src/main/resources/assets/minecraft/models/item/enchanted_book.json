@@ -3,7 +3,8 @@
   "textures": {
     "layer0": "minecraft:item/enchanted_book_base",
     "layer1": "minecraft:item/enchanted_book_cover_overlay",
-    "layer2": "minecraft:item/enchanted_book_seal_overlay"
+    "layer2": "minecraft:item/enchanted_book_seal_overlay",
+    "layer3": "minecraft:item/enchanted_book_ribbon_overlay"
   },
   "overrides": [
     {

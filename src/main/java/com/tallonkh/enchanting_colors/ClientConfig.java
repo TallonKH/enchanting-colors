@@ -19,6 +19,10 @@ import static com.tallonkh.enchanting_colors.MathUtil.parseHexCode;
 @Mod.EventBusSubscriber(modid = EnchantingColors.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientConfig
 {
+    public static enum ColorMode {
+        cover,
+        ribbon,
+    }
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec.ConfigValue<Boolean> ENCHANTED_BOOK_GLINT = BUILDER
             .comment("Display the vanilla glint effect on enchanted books. If false, there will be no glint.")
@@ -26,6 +30,9 @@ public class ClientConfig
     public static final ForgeConfigSpec.ConfigValue<Boolean> USE_CUSTOM_SEAL = BUILDER
             .comment("When true, books with all enchants at max-level will have a different color seal.")
             .define("maxedBookSeal", true);
+    public static final ForgeConfigSpec.ConfigValue<ColorMode> COLOR_MODE = BUILDER
+            .comment("Which part of the book should be colored by enchantment (cover|ribbon).")
+            .define("colorMode", ColorMode.cover);
     public static final ForgeConfigSpec.ConfigValue<Boolean> USE_LARGE_BOOK = BUILDER
             .comment("When true, books with multiple enchants will appear larger.")
             .define("multiBookLarge", true);

@@ -10,8 +10,6 @@ import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.List;
-
 import static com.tallonkh.enchanting_colors.EnchantInfo.ENCHANT_INFOS;
 import static com.tallonkh.enchanting_colors.EnchantUtil.getEnchantsTag;
 import static com.tallonkh.enchanting_colors.EnchantingColors.MODID;
@@ -26,6 +24,8 @@ public class ItemOverlayColor {
 
     public static final int BASE_COVER_COLOR_HEX = 0xFF654b17;
     public static final RgbColor BASE_COVER_COLOR = RgbColor.fromArgbHex(BASE_COVER_COLOR_HEX);
+    public static final int BASE_RIBBON_COLOR_HEX = 0xFFc51339;
+    public static final RgbColor BASE_RIBBON_COLOR = RgbColor.fromArgbHex(BASE_RIBBON_COLOR_HEX);
 
     public static final int SEAL_COLOR_EMPTY_HEX = 0xffc6cbcc;
     public static final int SEAL_COLOR_NORMAL_HEX = 0xffe8b73a;
@@ -33,14 +33,16 @@ public class ItemOverlayColor {
 
     public static final ItemColor computeEnchantmentItemColor = (stack, layerIndex) -> {
         ListTag enchants = getEnchantsTag(stack, false);
+        ClientConfig.ColorMode colorMode = ClientConfig.COLOR_MODE.get();
         return switch (layerIndex) {
-            case 1 -> computeCoverColor(enchants);
+            case 1 -> colorMode.equals(ClientConfig.ColorMode.cover) ? computeEnchantsColor(enchants, BASE_COVER_COLOR) : BASE_COVER_COLOR_HEX;
             case 2 -> computeSealColor(enchants);
+            case 3 -> colorMode.equals(ClientConfig.ColorMode.ribbon) ? computeEnchantsColor(enchants, BASE_RIBBON_COLOR) : BASE_RIBBON_COLOR_HEX;
             default -> -1;
         };
     };
 
-    public static int computeCoverColor(ListTag enchants){
+    public static int computeEnchantsColor(ListTag enchants, RgbColor baseColor){
         if (enchants == null) {
             // Debug color.
             return RgbColor.fromArgbHex(BASE_COVER_COLOR_HEX).toHexArgb();
@@ -78,7 +80,7 @@ public class ItemOverlayColor {
 
         RgbColor target = new RgbColor(rSum / lvlSum, gSum / lvlSum, bSum / lvlSum);
         float strength = lerpf(0.2f,1.0f, Math.min(1.0F, lvlSum / maxLvlSum));
-        return RgbColor.lerp(BASE_COVER_COLOR, target, strength).toHexArgb();
+        return RgbColor.lerp(baseColor, target, strength).toHexArgb();
     }
 
     public static int computeSealColor(ListTag enchants){
