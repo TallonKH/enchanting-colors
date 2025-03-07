@@ -2,6 +2,15 @@
   "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "minecraft:item/enchanted_book_base",
-    "layer1": "minecraft:item/enchanted_book_overlay"
-  }
+    "layer1": "minecraft:item/enchanted_book_cover_overlay",
+    "layer2": "minecraft:item/enchanted_book_seal_overlay"
+  },
+  "overrides": [
+    {
+      "model": "minecraft:item/enchanted_book_big",
+      "predicate": {
+        "enchanting_colors:big": 0.5
+      }
+    }
+  ]
 }

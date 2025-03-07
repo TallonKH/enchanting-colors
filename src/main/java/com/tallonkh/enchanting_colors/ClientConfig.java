@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.tallonkh.enchanting_colors.EnchantInfo.ENCHANT_INFOS;
-import static com.tallonkh.enchanting_colors.MathUtil.colorFromHexCode;
+import static com.tallonkh.enchanting_colors.MathUtil.parseHexCode;
 
 // An example config class. This is not required, but it's a good idea to have one to keep your config organized.
 // Demonstrates how to use Forge's config APIs
@@ -83,7 +83,7 @@ public class ClientConfig
             }
 
             String enchantId = configString.substring(0, split);
-            int color = colorFromHexCode(configString.substring(split+1));
+            MathUtil.RgbColor color = MathUtil.RgbColor.fromArgbHex(parseHexCode(configString.substring(split+1)));
 
             Enchantment enchant = ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.tryParse(enchantId));
 

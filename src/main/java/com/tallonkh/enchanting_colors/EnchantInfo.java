@@ -5,6 +5,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import java.util.HashMap;
 import java.util.Map;
 
-public record EnchantInfo (String enchantId, int color, Enchantment enchant){
+public record EnchantInfo (String enchantId, MathUtil.RgbColor color, Enchantment enchant){
     public static final Map<String, EnchantInfo> ENCHANT_INFOS = new HashMap<>();
 }

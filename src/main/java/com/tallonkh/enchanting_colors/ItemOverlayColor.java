@@ -22,54 +22,89 @@ public class ItemOverlayColor {
         event.register(computeEnchantmentItemColor, Items.ENCHANTED_BOOK);
     }
 
-    public static final int BASE_COLOR = 0xFF654b17;
-    public static final int[] BASE_COLOR_PARTS = breakColor(BASE_COLOR);
+    public static final int BASE_COVER_COLOR_HEX = 0xFF654b17;
+    public static final RgbColor BASE_COVER_COLOR = RgbColor.fromArgbHex(BASE_COVER_COLOR_HEX);
+
+    public static final int SEAL_COLOR_EMPTY_HEX = 0xffc6cbcc;
+    public static final int SEAL_COLOR_NORMAL_HEX = 0xffe8b73a;
+    public static final int SEAL_COLOR_MAXED_HEX = 0xff7ae0ff;
 
     public static final ItemColor computeEnchantmentItemColor = (stack, layerIndex) -> {
-        if (layerIndex == 0) {
-            return -1;
-        }
         ListTag enchants = getEnchantsTag(stack, false);
+        return switch (layerIndex) {
+            case 1 -> computeCoverColor(enchants);
+            case 2 -> computeSealColor(enchants);
+            default -> -1;
+        };
+    };
+
+    public static int computeCoverColor(ListTag enchants){
         if (enchants == null) {
             // Debug color.
-            return BASE_COLOR;
-        } else {
-            float r = 0F;
-            float g = 0F;
-            float b = 0F;
-            float totalLevels = 0F; // Used to average colors.
-            int totalMaxLevels = 0; // Used to weigh against the base unenchanted color.
-
-            for (Tag tag : enchants) {
-                CompoundTag enchant = (CompoundTag) tag;
-                String enchantId = enchant.getString("id");
-                EnchantInfo enchantInfo = ENCHANT_INFOS.get(enchantId);
-                if (enchantInfo != null) {
-                    int lvl = enchant.getInt("lvl");
-                    int[] parts = breakColor(enchantInfo.color());
-
-                    int maxLvl = enchantInfo.enchant().getMaxLevel();
-                    totalMaxLevels += maxLvl;
-                    totalLevels += lvl;
-
-                    r += parts[1] * lvl;
-                    g += parts[2] * lvl;
-                    b += parts[3] * lvl;
-                }
-            }
-
-            if (totalLevels == 0) {
-                return BASE_COLOR;
-            }
-
-            float enchantedness = lerpf(0.2f, 1.0f, Math.min(1.0F, totalLevels / totalMaxLevels));
-
-            return makeColor(
-                    0xFF,
-                    (int) Math.floor(lerpf(BASE_COLOR_PARTS[1], r / totalLevels, enchantedness)),
-                    (int) Math.floor(lerpf(BASE_COLOR_PARTS[2], g / totalLevels, enchantedness)),
-                    (int) Math.floor(lerpf(BASE_COLOR_PARTS[3], b / totalLevels, enchantedness))
-            );
+            return RgbColor.fromArgbHex(BASE_COVER_COLOR_HEX).toHexArgb();
         }
-    };
+
+        float rSum = 0f;
+        float gSum = 0f;
+        float bSum = 0f;
+
+        float lvlSum = 0f;
+        float maxLvlSum = 0f;
+
+        for (Tag tag : enchants) {
+            CompoundTag enchant = (CompoundTag) tag;
+            String enchantId = enchant.getString("id");
+            EnchantInfo enchantInfo = ENCHANT_INFOS.get(enchantId);
+            if (enchantInfo != null) {
+                int lvl = enchant.getInt("lvl");
+                RgbColor color = enchantInfo.color();
+
+                int maxLvl = enchantInfo.enchant().getMaxLevel();
+                maxLvlSum += maxLvl;
+                lvlSum += lvl;
+
+
+                rSum += color.r() * lvl;
+                gSum += color.g() * lvl;
+                bSum += color.b() * lvl;
+            }
+        }
+
+        if (lvlSum < 0.1) {
+            return BASE_COVER_COLOR_HEX;
+        }
+
+        RgbColor target = new RgbColor(rSum / lvlSum, gSum / lvlSum, bSum / lvlSum);
+        float strength = lerpf(0.2f,1.0f, Math.min(1.0F, lvlSum / maxLvlSum));
+        return RgbColor.lerp(BASE_COVER_COLOR, target, strength).toHexArgb();
+    }
+
+    public static int computeSealColor(ListTag enchants){
+        if (enchants == null) {
+            return SEAL_COLOR_EMPTY_HEX;
+        }
+
+        int lvlSum = 0;
+
+        for (Tag tag : enchants) {
+            CompoundTag enchant = (CompoundTag) tag;
+            String enchantId = enchant.getString("id");
+            EnchantInfo enchantInfo = ENCHANT_INFOS.get(enchantId);
+            if (enchantInfo != null) {
+                int lvl = enchant.getInt("lvl");
+                int maxLvl = enchantInfo.enchant().getMaxLevel();
+                if(lvl < maxLvl){
+                    return SEAL_COLOR_NORMAL_HEX;
+                }
+
+                lvlSum += lvl;
+            }
+        }
+
+        if(lvlSum == 0){
+            return SEAL_COLOR_EMPTY_HEX;
+        }
+
+        return SEAL_COLOR_MAXED_HEX;
+    }
 }

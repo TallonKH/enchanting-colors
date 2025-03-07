@@ -1,6 +1,9 @@
 package com.tallonkh.enchanting_colors;
 
 import com.mojang.logging.LogUtils;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -15,7 +18,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
-import java.util.HashMap;
+import static com.tallonkh.enchanting_colors.EnchantUtil.getEnchantsTag;
+import static com.tallonkh.enchanting_colors.EnchantUtil.hasMultipleEnchants;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(EnchantingColors.MODID)
@@ -49,6 +53,15 @@ public class EnchantingColors {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event)
         {
+            event.enqueueWork(() ->
+            {
+                // Book texture variations.
+                ItemProperties.register(
+                    Items.ENCHANTED_BOOK,
+                    new ResourceLocation(MODID, "big"),
+                    (stack, level, entity, id) -> hasMultipleEnchants(getEnchantsTag(stack, false)) ? 1.0f : 0.0f
+                );
+            });
         }
     }
 }

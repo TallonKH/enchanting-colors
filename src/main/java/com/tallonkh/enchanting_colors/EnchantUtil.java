@@ -2,12 +2,14 @@ package com.tallonkh.enchanting_colors;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
+import static com.tallonkh.enchanting_colors.EnchantInfo.ENCHANT_INFOS;
 import static com.tallonkh.enchanting_colors.EnchantingColors.MODID;
 
 public class EnchantUtil {
@@ -38,5 +40,23 @@ public class EnchantUtil {
         } else {
             return null;
         }
+    }
+
+    public static boolean hasMultipleEnchants(ListTag enchants){
+        if(enchants == null){
+            return false;
+        }
+
+        int found = 0;
+        for (Tag tag : enchants) {
+            CompoundTag enchant = (CompoundTag) tag;
+            if(enchant.getInt("lvl") > 0){
+                found++;
+                if(found >= 2){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
