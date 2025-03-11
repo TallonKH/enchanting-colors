@@ -37,7 +37,7 @@ public class ClientConfig
             .comment("When true, books with multiple enchants will appear larger.")
             .define("multiBookLarge", true);
     public static final ForgeConfigSpec.ConfigValue<List<String>> ENCHANT_COLORS = BUILDER
-            .comment("List of colors in format 'mod:enchant_id=0xhexcode'.")
+            .comment("List of colors in format 'mod:enchant_id=0xAARRGGBB'- color should be in (A)RGB hexcode format.")
             .define("enchantColors", accumulateColorStrings(Defaults.ENCHANT_COLORS));
 
     @SubscribeEvent

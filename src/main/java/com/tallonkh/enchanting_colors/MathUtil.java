@@ -10,7 +10,7 @@ public class MathUtil {
         if (colorString.startsWith("0X")) {
             colorString = colorString.substring(2);
         }
-        return Integer.parseInt(colorString, 16) | 0xFF000000;
+        return ((int) Long.parseLong(colorString, 16)) | 0xFF000000;
     }
 
     public record RgbColor(float r, float g, float b){

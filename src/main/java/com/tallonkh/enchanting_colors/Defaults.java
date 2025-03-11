@@ -6,7 +6,7 @@ import java.util.List;
 public class Defaults {
     public record EnchantColor(String id, int hexColor){
         public String toConfigString(){
-            return id + "=" + Integer.toString(hexColor);
+            return id + "=0x" + Integer.toHexString(hexColor);
         }
     }
 
