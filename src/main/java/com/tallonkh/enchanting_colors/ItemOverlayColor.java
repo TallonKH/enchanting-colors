@@ -10,6 +10,9 @@ import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.tallonkh.enchanting_colors.EnchantInfo.ENCHANT_INFOS;
 import static com.tallonkh.enchanting_colors.EnchantUtil.getEnchantsTag;
 import static com.tallonkh.enchanting_colors.EnchantingColors.MODID;
@@ -31,13 +34,39 @@ public class ItemOverlayColor {
     public static final int SEAL_COLOR_NORMAL_HEX = 0xffe8b73a;
     public static final int SEAL_COLOR_MAXED_HEX = 0xff7ae0ff;
 
+    private static final Map<ListTag, BookColor> cachedColorGroups = new HashMap<>();
+
+    private record BookColor(int cover, int seal, int ribbon){
+        private static BookColor compute(ClientConfig.ColorMode colorMode, ListTag enchants){
+            int cover = colorMode.equals(ClientConfig.ColorMode.cover) ? computeEnchantsColor(enchants, BASE_COVER_COLOR) : BASE_COVER_COLOR_HEX;
+            int seal = computeSealColor(enchants);
+            int ribbon = colorMode.equals(ClientConfig.ColorMode.ribbon) ? computeEnchantsColor(enchants, BASE_RIBBON_COLOR) : BASE_RIBBON_COLOR_HEX;
+            return new BookColor(cover, seal, ribbon);
+        }
+    }
+
+
     public static final ItemColor computeEnchantmentItemColor = (stack, layerIndex) -> {
         ListTag enchants = getEnchantsTag(stack, false);
-        ClientConfig.ColorMode colorMode = ClientConfig.COLOR_MODE.get();
+
+        BookColor bookColor = cachedColorGroups.get(enchants);
+        if(bookColor == null){
+            bookColor = BookColor.compute(ClientConfig.COLOR_MODE.get(), enchants);
+
+            // Naive cache. Just clear it wholesale if it gets too large.
+            // This will cause issues if the number of books visible at once exceeds the size limit.
+            if(cachedColorGroups.size() >= ClientConfig.CACHE_SIZE_LIMIT.get()){
+                cachedColorGroups.clear();
+            }
+
+            cachedColorGroups.put(enchants, bookColor);
+
+        }
+
         return switch (layerIndex) {
-            case 1 -> colorMode.equals(ClientConfig.ColorMode.cover) ? computeEnchantsColor(enchants, BASE_COVER_COLOR) : BASE_COVER_COLOR_HEX;
-            case 2 -> computeSealColor(enchants);
-            case 3 -> colorMode.equals(ClientConfig.ColorMode.ribbon) ? computeEnchantsColor(enchants, BASE_RIBBON_COLOR) : BASE_RIBBON_COLOR_HEX;
+            case 1 -> bookColor.cover;
+            case 2 -> bookColor.seal;
+            case 3 -> bookColor.ribbon;
             default -> -1;
         };
     };

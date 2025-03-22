@@ -39,6 +39,9 @@ public class ClientConfig
     public static final ForgeConfigSpec.ConfigValue<List<String>> ENCHANT_COLORS = BUILDER
             .comment("List of colors in format 'mod:enchant_id=0xAARRGGBB'- color should be in (A)RGB hexcode format.")
             .define("enchantColors", accumulateColorStrings(Defaults.ENCHANT_COLORS));
+    public static final ForgeConfigSpec.ConfigValue<Integer> CACHE_SIZE_LIMIT = BUILDER
+            .comment("Advanced performance setting. Higher values consume more memory, though it's pretty negligible (500 -> ~8kb). Things might get laggy if the number of UNIQUE enchanted books on your screen exceeds this value.")
+            .define("cacheSizeLimit", 500);
 
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event)
